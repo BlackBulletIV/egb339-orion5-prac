@@ -61,23 +61,6 @@ classdef TheClaw < Orion5
             pause(self.CLAW_MOVE_TIME);
         end
         
-        function [x, y, z] = forward_kinematics(self, t1, t2, t3, t4)
-            a1 = self.LINK_1;
-            a2 = self.LINK_2;
-            a3 = self.LINK_3;
-            l = self.OFFSET_R;
-            z = self.OFFSET_Z;
-            
-            l = l + a1 * cos(t2);
-            z = z + a1 * sin(t2);
-            l = l + a2 * cos(t2 - t3);
-            z = z + a2 * sin(t2 - t3);
-            l = l + a3 * cos(t2 - t3 - t4);
-            z = z + a3 * sin(t2 - t3 - t4);
-            x = l * cos(t1) + self.POS_X;
-            y = l * sin(t1) + self.POS_Y;
-        end
-        
         function [t1, t2, t3, t4] = inverse_kinematics(self, x, y, z)
             a1 = self.LINK_1;
             a2 = self.LINK_2;
@@ -105,18 +88,6 @@ classdef TheClaw < Orion5
             t4 = t4 * (180/pi);
         end
         
-        function t4 = get_wrist(self, x, y, z, t2)
-            a1 = self.LINK_1;
-            a2 = self.LINK_2;
-            a3 = self.LINK_3;
-            l = sqrt(x ^ 2 + y ^ 2) - self.OFFSET_R; % serves as x in the 2D solution
-            x2 = a1 * cos(t2);
-            z2 = a1 * sin(t2);
-            d = sqrt((l - x2) ^ 2 + (z - a3 - z2) ^ 2); % wrist to end effector
-            t4 = acos((a2 ^ 2 + a3 ^ 2 - d ^ 2) / (2 * a2 * a3));
-            t4 = t4 * (180/pi);
-        end
-        
         function move_to(self, x, y, z)
             [t1, t2, t3, t4] = self.inverse_kinematics(x, y, z);
             t1 = t1 + self.JOINT_OFFSET(1);
@@ -141,10 +112,6 @@ classdef TheClaw < Orion5
             self.setJointPosition(self.ELBOW, t3 * self.GEAR_RATIOS(3));
             self.setJointPosition(self.WRIST, t4 * self.GEAR_RATIOS(4));
             pause(self.MOVE_TIME);
-            %t2 = self.getJointPosition(self.SHOULDER) / self.GEAR_RATIOS(2) - self.JOINT_OFFSET(2);
-            %t4 = self.get_wrist(x, y, z, t2 * (pi/180)) + self.JOINT_OFFSET(4)
-            
-            %pause(self.MOVE_TIME);
         end
     end
 end

@@ -17,16 +17,6 @@ classdef TheClaw < Orion5
         LINK_2 = 0.136307;
         LINK_3 = 0.126;
         
-        %JOINT_ANGLES used to keep track of the robots angles converted
-        %from joint space
-        JOINT_ANGLES = nan;
-        
-        % DES_JOINT_ANGLES modified to suite robot i.e. scaled
-        % for gearboxes and the like and should not be used for current
-        % angles
-        DES_JOINT_ANGLES = nan;
-        
-        
         JOINT_OFFSET = [57.5, 9, 4, 0, 0];
         
         GEAR_RATIOS = [1, 2.857, 1, 1, 1];
